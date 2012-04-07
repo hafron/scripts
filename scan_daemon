@@ -1,0 +1,10 @@
+#!/bin/bash
+while [ 1 ]
+do
+    if [ `cat /sys/class/power_supply/yeeloong-bat/status` == "Discharging" ]; then
+	 echo "System pracuje na bateri, automatyczne skanowanie sieci bezprzewodowych zostało wyłączone. Aby wyszukać ręcznie wpisz: scan" > /etc/motd
+    else
+	/home/hafron/bin/scan > /etc/motd
+    fi
+    sleep 30
+done

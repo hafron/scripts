@@ -1,0 +1,38 @@
+#!/bin/bash
+NET_CONFIG=/etc/network/wireless-networks
+
+if [ "$1" != "" ]; then
+  if [ -f "$NET_CONFIG/$1" ]; then
+     echo "Łączenie z siecią $1"
+     wifi on 
+     ifdown wlan0 
+     ifup -i "$NET_CONFIG/$1" wlan0
+    exit 0
+  else
+    echo "Podana sieć nie jest skonfigurowana"
+    exit 0
+  fi
+else
+    nets=`iwlist scan 2>/dev/null | grep ESSID | perl -ne 'print "$1 " if /^.*"(.*)".*$/'`
+    if [ "$nets" = "" ]; then
+       wifi on
+       ifdown wlan0
+       ifup wlan0
+      nets=` iwlist scan 2>/dev/null | grep ESSID | perl -ne 'print "$1 " if /^.*"(.*)".*$/'`
+    fi
+    net_con=`iwconfig 2>/dev/null | grep ESSID | perl -ne 'print "$1 " if /^.*"(.*)".*$/'`
+
+    for net in $nets
+    do
+      net_con=`echo $net_con | tr -cd [:alpha:]` #remove whitespace
+
+      if [ -f "$NET_CONFIG/$net" ]; then
+	 if [ "$net_con" != "$net" ]; then
+	     ifdown wlan0
+	     ifup -i "$NET_CONFIG/$net" wlan0
+	 fi
+	 echo "Połączono z $net"
+	 exit 0
+      fi
+    done
+fi

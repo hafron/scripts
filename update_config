@@ -1,0 +1,21 @@
+#!/bin/bash
+REPO="$HOME/repo"
+
+IFS=$(echo -ne "\n\t")
+for sym in $(find "$HOME" -maxdepth 1 -type l | grep '/\.'); do
+    rm "$sym"
+done
+
+
+if [ ! -d "$HOME/oldconfig" ]; then
+    mkdir "$HOME/oldconfig"
+fi
+
+cd $REPO/config
+IFS=$(echo -ne "\n\t ")
+for conf in $(ls | grep -v 'etc'); do
+    if [[ -f "$HOME/.$conf" || -d "$HOME/.$conf" ]]; then
+	mv "$HOME/.$conf" "$HOME/oldconfig"
+    fi
+    ln -s "$REPO/config/$conf" "$HOME/.$conf"
+done

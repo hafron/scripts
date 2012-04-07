@@ -1,0 +1,18 @@
+#!/bin/bash
+
+MSG="Screen locked by $USER - `date +"%H:%M"`"
+
+dir=/home/hafron/i3lock-screens
+file=`/bin/ls -1 "$dir" | sort --random-sort | head -1`
+path=`readlink --canonicalize "$dir/$file"`
+
+res=`xrandr --current 2>/dev/null| grep "*"`
+
+IFS=' ' read -ra ADDR <<< "$res"
+
+echo $file
+
+convert $path -resize ${ADDR[0]}!  -gravity south \
+          -stroke '#000C' -strokewidth 2 -annotate 0 "$MSG" \
+          -stroke  none   -fill white    -annotate 0 "$MSG" \
+	  /home/hafron/tmp/i3lock_screen.png

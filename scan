@@ -1,0 +1,51 @@
+#!/bin/bash
+NET_CONFIG=/etc/network/wireless-networks
+
+nets=` iwlist scan 2>/dev/null | grep ESSID | perl -ne 'print "$1 " if /^.*"(.*)".*$/'`
+
+if [ "$nets" = "" ]; then
+     wifi on 2>/dev/null > /dev/null
+     ifdown wlan0 2>/dev/null > /dev/null
+     ifup wlan0 2>/dev/null > /dev/null
+    nets=` iwlist scan 2>/dev/null | grep ESSID | perl -ne 'print "$1 " if /^.*"(.*)".*$/'`
+fi
+i=0
+j=0
+
+net_con=`iwconfig 2>/dev/null | grep ESSID | perl -ne 'print "$1 " if /^.*"(.*)".*$/'`
+net_con=`echo $net_con` #remove whitespace
+
+for net in $nets
+do
+  if [ -f "$NET_CONFIG/$net" ]; then
+    ex_nets[$i]=$net
+    let 'i += 1'
+  else
+    new_nets[$j]=$net
+    let 'j += 1'
+  fi
+done
+if [ "$i" = "0" ]; then
+    echo "Nie znaleziono skonfigurowanych sieci bezprzewodowych."
+else
+    echo "Znaleziono ${#ex_nets[*]} skonfigurowane sieci bezprzewodowe:"
+    for net in "${ex_nets[@]}"
+    do
+	echo -n "  - $net"
+	if [ "$net" == "$net_con" ]; then
+	    echo " (połączono)" 
+	else
+	    echo
+	fi
+    done
+fi
+
+if [ "$j" = "0" ]; then
+    echo "Nie znaleziono nowych sieci bezprzewodowych."
+else
+    echo "Znaleziono ${#new_nets[*]} nowe sieci bezprzewodowe:"
+    for net in "${new_nets[@]}"
+    do
+	echo "  - $net"
+    done
+fi
