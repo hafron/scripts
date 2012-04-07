@@ -1,0 +1,2 @@
+#!/bin/sh
+git pull hafron@`$HOME/.ghost`:`pwd`
