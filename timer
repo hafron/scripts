@@ -1,13 +1,23 @@
 #!/bin/bash
-TIME_PER_TASK=15
+TIME_PER_TASK=600
+DATA_FILE="$HOME/tmp/calc/test.cvs"
+
+if [ ! -f $DATA_FILE ]; then
+    touch $DATA_FILE
+fi
+
 while [ 1 ]
 do
+    echo -n "Podaj nr zadania: ";
+    read TASK_NO;
+
     if [ -t 0 ]; then stty -echo -icanon time 0 min 0; fi
 
     keypress=''
     res_time=0
     i=$TIME_PER_TASK;
     beep=0
+    TASK_TIME=0;
     while [ $i -gt 0 ] || [ $res_time -ge 0 ]
     do
 	clear
@@ -31,8 +41,15 @@ do
 	if [ "x$keypress" != "x" ]; then
 	    res_time=$((i+res_time));
 	    i=$TIME_PER_TASK
+	    if [ -t 0 ]; then stty sane; fi
+	    echo "$1;$2.$TASK_NO;$TASK_TIME" >> $DATA_FILE
+	    echo -n "Podaj nr zadania: "
+	    read TASK_NO;
+	    TASK_TIME=0
+	    if [ -t 0 ]; then stty -echo -icanon time 0 min 0; fi
 	    beep=0
 	fi
+	TASK_TIME=$((TASK_TIME+1))
 	sleep 1;
     done
 
@@ -41,6 +58,5 @@ do
 	echo -ne "\007"
 	sleep 0.5;
     done
-    if [ -t 0 ]; then stty sane; fi
 
 done
