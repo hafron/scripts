@@ -1,9 +1,22 @@
 #!/bin/bash
 TIME_PER_TASK=600
-DATA_FILE="$HOME/tmp/calc/test.cvs"
+DATA_FILE="$HOME/data/wtimer/data.cvs"
 
 if [ ! -f $DATA_FILE ]; then
     touch $DATA_FILE
+fi
+
+if [ "$1" = "" ]; then
+    echo -n "Podaj przedmiot: ";
+    read SUBJECT;
+else
+    SUBJECT="$0"
+fi
+if [ "$2" = "" ]; then
+    echo -n "Podaj prefiks: ";
+    read PREFIX;
+else
+    PREFIX="$0"
 fi
 
 while [ 1 ]
@@ -42,7 +55,7 @@ do
 	    res_time=$((i+res_time));
 	    i=$TIME_PER_TASK
 	    if [ -t 0 ]; then stty sane; fi
-	    echo "$1;$2.$TASK_NO;$TASK_TIME" >> $DATA_FILE
+	    echo "$SUBJECT;$PREFIX.$TASK_NO;$TASK_TIME" >> $DATA_FILE
 	    echo -n "Podaj nr zadania: "
 	    read TASK_NO;
 	    TASK_TIME=0
