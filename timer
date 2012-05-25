@@ -19,57 +19,52 @@ else
     PREFIX="$0"
 fi
 
+echo -n "Podaj nr zadania: ";
+read TASK_NO;
+
+keypress=''
+res_time=0
+i=$TIME_PER_TASK;
+beep=0
+TASK_TIME=0;
+
 while [ 1 ]
 do
-    echo -n "Podaj nr zadania: ";
-    read TASK_NO;
 
     if [ -t 0 ]; then stty -echo -icanon time 0 min 0; fi
 
-    keypress=''
-    res_time=0
-    i=$TIME_PER_TASK;
-    beep=0
-    TASK_TIME=0;
-    while [ $i -gt 0 ] || [ $res_time -ge 0 ]
-    do
-	clear
-	min=$((i/60))
-	sec=$((i-min*60))
-	echo "$min:$sec";
-	min=$((res_time/60))
-	sec=$((res_time-min*60))
-	echo "$min:$sec";
+    clear
+    min=$((i/60))
+    sec=$((i-min*60))
+    echo "$min:$sec";
+    min=$((res_time/60))
+    sec=$((res_time-min*60))
+    echo "$min:$sec";
 
-	if [ $i -le 0 ]; then
-	    if [ $beep == 0 ]; then
-		echo -ne "\007"
-	    fi
-	    beep=1
-	    res_time=$((res_time-1))
-	else
-	    i=$((i-1))
-	fi
-	read keypress
-	if [ "x$keypress" != "x" ]; then
-	    res_time=$((i+res_time));
-	    i=$TIME_PER_TASK
-	    if [ -t 0 ]; then stty sane; fi
-	    echo "$SUBJECT;$PREFIX.$TASK_NO;$TASK_TIME" >> $DATA_FILE
-	    echo -n "Podaj nr zadania: "
-	    read TASK_NO;
-	    TASK_TIME=0
-	    if [ -t 0 ]; then stty -echo -icanon time 0 min 0; fi
-	    beep=0
-	fi
-	TASK_TIME=$((TASK_TIME+1))
-	sleep 1;
-    done
-
-    while [ "x$keypress" = "x" ]; do
-	read keypress
+    if [ $i -le 0 ] && [ $res_time -le 0 ]; then
 	echo -ne "\007"
-	sleep 0.5;
-    done
+    elif [ $i -le 0 ]; then
+	if [ $beep == 0 ]; then
+	    echo -ne "\007"
+	fi
+	beep=1
+	res_time=$((res_time-1))
+    else
+	i=$((i-1))
+    fi
+    read keypress
+    if [ "x$keypress" != "x" ]; then
+	res_time=$((i+res_time));
+	i=$TIME_PER_TASK
+	if [ -t 0 ]; then stty sane; fi
+	echo "$SUBJECT;$PREFIX.$TASK_NO;$TASK_TIME" >> $DATA_FILE
+	echo -n "Podaj nr zadania: "
+	read TASK_NO;
+	TASK_TIME=0
+	if [ -t 0 ]; then stty -echo -icanon time 0 min 0; fi
+	beep=0
+    fi
+    TASK_TIME=$((TASK_TIME+1))
+    sleep 1;
 
 done
