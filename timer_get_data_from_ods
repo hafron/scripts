@@ -1,0 +1,35 @@
+#!/usr/bin/python3.2
+from ezodf import opendoc
+import sys
+
+przedmiot = ""
+kategoria = ""
+arkusz = ""
+if(len(sys.argv) == 1):
+    print("no_document")
+    exit(1)
+elif(len(sys.argv) == 2):
+    print("no_category")
+    exit(1)
+elif(len(sys.argv) == 3):
+    arkusz = sys.argv[1];
+    przedmiot = sys.argv[2];
+else:
+    arkusz = sys.argv[1];
+    przedmiot = sys.argv[2];
+    kategoria = sys.argv[3];
+
+ods = opendoc(arkusz)
+sheets = ods.sheets
+
+if (kategoria in sheets.names()):
+    sheet = sheets[kategoria]
+elif (przedmiot in sheets.names()):
+    sheet = sheets[przedmiot]
+else:
+    print("no_data")
+    exit(1)
+bufor = sheet['C9'].value
+maks = sheet['C12'].value
+
+print(round(bufor), " ", round(maks))

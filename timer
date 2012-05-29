@@ -1,6 +1,6 @@
 #!/bin/bash
-TIME_PER_TASK=600
 DATA_FILE="$HOME/data/wtimer/data.cvs"
+SHEET="$HOME/data/wtimer/arkusz.ods"
 
 if [ ! -f $DATA_FILE ]; then
     touch $DATA_FILE
@@ -22,9 +22,12 @@ fi
 echo -n "Podaj nr zadania: ";
 read TASK_NO;
 
+timing=(`timer_get_data_from_ods $SHEET $SUBJECT $PREFIX`)
+
 keypress=''
-res_time=0
-i=$TIME_PER_TASK;
+res_time=${timing[0]} #RESERVE_TIME
+i=${timing[1]} #TIME_PER_TASK
+
 beep=0
 TASK_TIME=0;
 
@@ -56,8 +59,13 @@ do
     if [ "x$keypress" != "x" ]; then
 	res_time=$((i+res_time));
 	i=$TIME_PER_TASK
+	if [ $keypress != "u" ]; then
+	    stat="d"
+	else
+	    stat="u"
+	fi
 	if [ -t 0 ]; then stty sane; fi
-	echo "$SUBJECT;$PREFIX.$TASK_NO;$TASK_TIME" >> $DATA_FILE
+	echo "$SUBJECT;$PREFIX;$TASK_NO;$TASK_TIME;$stat" >> $DATA_FILE
 	echo -n "Podaj nr zadania: "
 	read TASK_NO;
 	TASK_TIME=0
