@@ -58,7 +58,7 @@ do
     read keypress
     if [ "x$keypress" != "x" ]; then
 	res_time=$((i+res_time));
-	i=$TIME_PER_TASK
+	i=${timing[1]} #TIME_PER_TASK
 	if [ $keypress != "u" ]; then
 	    stat="d"
 	else
