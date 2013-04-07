@@ -1,0 +1,2 @@
+#!/bin/bash
+sudo rdiff-backup --include-globbing-filelist /etc/rdiff-backup / /media/$1/hafron

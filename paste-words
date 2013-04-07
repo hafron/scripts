@@ -1,0 +1,2 @@
+#!/bin/bash
+echo "$(xclip -o | tr '\n' ' ');$1" >> $HOME/words.csv

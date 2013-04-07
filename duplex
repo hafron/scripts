@@ -1,0 +1,33 @@
+#!/bin/bash
+
+if [[ ! -f $1 ]]; then
+    echo "Given file doesn't exist"
+    exit 1
+fi
+
+first="lpr -o page-set=odd $1"
+second="lpr -o page-set=even -o outputorder=reverse $1"
+
+echo $first;
+
+$($first)
+
+pdf_pages=$(pdfinfo $1|grep Pages:|awk '{print $2}')
+
+let pages_odd=$[$pdf_pages%2]
+
+echo "White to the end of the printing..."
+echo "After printing ends:"
+if [[ "$pages_odd" == 1 ]]; then
+    echo 
+    echo "	- !Take the last printed page and put it back."
+    echo
+fi
+echo "	- Rotate them 180 degrees."
+echo "	- Put them into printer."
+echo "End press Enter."
+
+read 
+
+echo $second
+$($second)

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [[ ! -e /tmp/rotation ]]; then
+    echo -n "normal" > /tmp/rotation
+fi
+
+xrandr --output DVI-I-2 --rotation `cat /tmp/rotation`
+
+if [[ `cat /tmp/rotation` = "normal" ]]; then
+    echo -n "left" > /tmp/rotation
+else
+    echo -n "normal" > /tmp/rotation
+fi

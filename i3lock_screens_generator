@@ -2,7 +2,7 @@
 
 MSG="Screen locked by $USER - `date +"%H:%M"`"
 
-dir=/home/hafron/i3lock-screens
+dir=/home/hafron/doc/wallpapers
 file=`/bin/ls -1 "$dir" | sort --random-sort | head -1`
 path=`readlink --canonicalize "$dir/$file"`
 

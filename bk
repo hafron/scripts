@@ -1,0 +1,8 @@
+#!/bin/bash
+if [[ $1 = "all" ]]; then
+    rdiff-backup --include-globbing-filelist /etc/rdiff-backup / hafron@192.168.90.1::/home/hafron/spark-backup
+elif [[ -e $1 ]]; then
+    rdiff-backup $1 hafron@192.168.90.1::/home/hafron/spark-backup
+else
+    echo "Usage: "
+fi
