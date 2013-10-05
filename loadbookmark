@@ -1,0 +1,2 @@
+#!/bin/sh
+cat ~/.surf/bookmarks | dmenu -i -b -l 10 | awk '{print $1}'
